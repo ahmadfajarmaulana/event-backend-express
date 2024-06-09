@@ -1,25 +1,23 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Icategory } from "src/schemas/Category";
 import { CategoryInput } from "src/types/CategoryType";
 import { create, findAll, findById, remove, update } from "../services/CategoryService";
 
 
-export const createCategory = async (req: Request, res: Response) => {
+export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { name } = req.body as CategoryInput;
-        const category = await create({ name } as Icategory);
+        const category = await create(req.body);
 
         return res.status(201).json({ 
             message: "Category created",
             data: category 
         });
     } catch (error) {
-        console.error('Error during category creation:', error);
-        return res.status(500).json({ message: "Internal server error" });
+        next(error)
     }
 }
 
-export const getAllCategories = async (req: Request, res: Response) => {
+export const getAllCategories = async (_req: Request, res: Response, next: NextFunction) => {
     try{
         const categories = await findAll();
 
@@ -28,39 +26,28 @@ export const getAllCategories = async (req: Request, res: Response) => {
             data: categories
         });
     } catch (error) {
-        console.error('Error during fetching categories:', error);
-        return res.status(500).json({ message: "Internal server error" });
+        next(error)
     }
 }
 
-export const getCategoryById = async (req: Request, res: Response) => {
+export const getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const category = await findById(id);
-
-        if(!category){
-            return res.status(404).json({ message: "Category not found" });
-        }
 
         return res.status(200).json({ 
             message: "Category found",
             data: category
         });
     } catch (error) {
-        console.error('Error during fetching category:', error);
-        return res.status(500).json({ message: "Internal server error" });
+        next(error)
     }
 }
 
-export const updateCategory = async (req: Request, res: Response) => {
+export const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const { name } = req.body as CategoryInput;
-        const category = await findById(id);
-
-        if(!category){
-            return res.status(404).json({ message: "Category not found" });
-        }
 
         const result = await update(id, { name } as Icategory);
 
@@ -70,12 +57,11 @@ export const updateCategory = async (req: Request, res: Response) => {
         });
         
     } catch (error) {
-        console.error('Error during updating category:', error);
-        return res.status(500).json({ message: "Internal server error" });
+        next(error)
     }
 }
 
-export const deleteCategory = async (req: Request, res: Response) => {
+export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const result = await remove(id);
@@ -85,7 +71,6 @@ export const deleteCategory = async (req: Request, res: Response) => {
             data: result
         });
     } catch (error) {
-        console.error('Error during deleting category:', error);
-        return res.status(500).json({ message: "Internal server error" });
+        next(error)
     }
 }

@@ -5,7 +5,10 @@ import express, { Express, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import config from './config';
 import { AuthCheck } from './middleware/AuthCheck';
+import { notFound } from './middleware/not-found';
 import routes from './routes';
+
+import errorHandlerMiddleware from './middleware/handler-error';
 
 dotenv.config();
 const app: Express = express();
@@ -15,7 +18,9 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 app.use(routes);
+app.use(notFound);
 app.use(AuthCheck); 
+app.use(errorHandlerMiddleware);
 
 const mongoURI = config.mongoURI;
 

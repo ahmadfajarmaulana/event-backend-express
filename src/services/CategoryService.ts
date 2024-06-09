@@ -1,7 +1,15 @@
+import BadRequest from "../Helpers/errors/bad-request";
+import NotFound from "../Helpers/errors/not-found";
 import { Category, Icategory } from "../schemas/Category";
+import { CategoryInput } from "../types/CategoryType";
 
-export const create = async ({name}: Icategory): Promise<Icategory> => {
-    const category = new Category({name});
+export const create = async (value: CategoryInput): Promise<Icategory> => {
+    const category = new Category(value);
+
+    const check = await Category.findOne({name: value.name}).exec();
+
+    if (check) throw new BadRequest('Category already exists');
+
     await category.save();
 
     return category;
@@ -15,24 +23,25 @@ export const findAll = async (): Promise<Icategory[]> => {
 }
 
 export const findById = async (id: string): Promise<Icategory | null> => {
-    const category = await Category.findById(id).select({id: 1, name: 1}).exec();
+    const result = await Category.findById(id).select({id: 1, name: 1}).exec();
 
-    return category;
+    if (!result) throw new NotFound('Category not found with this id : ' + id);
+
+    return result;
 }
 
 export const update = async (id: string, {name}: Icategory): Promise<Icategory | null> => {
-    const category = await Category.findById(id).exec();
+    const result = await Category.findByIdAndUpdate(id, {name}, { new: true, runValidators: true }).exec();
 
-    if(!category){
-        return null;
-    }
+    if (!result) throw new NotFound('Category not found with this id : ' + id);
 
-    category.name = name;
-    await category.save();
-
-    return category;
+    return result;
 }
 
 export const remove = async (id: string): Promise<Icategory | null> => {
-    return await Category.findByIdAndDelete(id).exec();
+    const result =  await Category.findByIdAndDelete(id).exec();
+
+    if (!result) throw new NotFound('Category not found with this id : ' + id);
+
+    return result;
 }
