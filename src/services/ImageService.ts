@@ -1,3 +1,4 @@
+import { NotFoundError } from '../Helpers/errors';
 import { Image, ImageInterface } from '../schemas/Image';
 import { ImageInput } from '../types/ImageType';
 
@@ -16,4 +17,14 @@ export const upload = async (file: Express.Multer.File): Promise<ImageInterface 
 
     const result = await image.save();
     return result;
+}
+
+export const checkImage = async (id: string): Promise<ImageInterface | null> => {
+    const image = await Image.findById(id);
+
+    if (!image) {
+        throw new NotFoundError('Image not found with id : ' + id);
+    }
+
+    return image;
 }
