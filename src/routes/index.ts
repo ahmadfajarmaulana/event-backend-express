@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AuthCheck } from "../middleware/AuthCheck";
 import AuthRoutes from "./AuthRoutes";
 import CategorRoutes from "./CategoryRoutes";
+import EventRoutes from "./EventRoutes";
 import ImageRoutes from "./ImageRoutes";
 import TalentRoutes from "./TalentRoutes";
 import UserRoutes from "./UserRoutes";
@@ -13,5 +14,6 @@ routes.use("/api/v1/categories", CategorRoutes);
 routes.use("/api/v1/auth", AuthRoutes)
 routes.use("/api/v1/images", ImageRoutes)
 routes.use("/api/v1/talents", TalentRoutes)
+routes.use("/api/v1/events", EventRoutes)
 
 export default routes;
