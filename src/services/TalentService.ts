@@ -45,7 +45,7 @@ export const findById = async (id: string): Promise<TalentInterface | null> => {
         })
         .select('id name role image').exec();
 
-    if (!talent) throw new BadRequestError('Talent not found with id : ' + id);
+    if (!talent) throw new NotFoundError('Talent not found with id : ' + id);
 
     return talent;
 }
