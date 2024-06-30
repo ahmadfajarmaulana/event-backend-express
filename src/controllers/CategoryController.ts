@@ -15,7 +15,7 @@ export const createCategory = async (req: Request, res: Response, next: NextFunc
     }
 }
 
-export const getAllCategories = async (_req: Request, res: Response, next: NextFunction) => {
+export const getAllCategories = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const categories = await findAll();
 
