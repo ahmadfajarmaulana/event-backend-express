@@ -4,7 +4,7 @@ import { create, findAll, findById, remove, update } from "../services/CategoryS
 
 export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const category = await create(req.body);
+        const category = await create(req.body, req.user);
 
         return res.status(201).json({
             message: "Category created",
@@ -17,7 +17,7 @@ export const createCategory = async (req: Request, res: Response, next: NextFunc
 
 export const getAllCategories = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const categories = await findAll();
+        const categories = await findAll(req.user);
 
         return res.status(200).json({
             message: "All categories",
@@ -31,7 +31,7 @@ export const getAllCategories = async (req: Request, res: Response, next: NextFu
 export const getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const category = await findById(id);
+        const category = await findById(id, req.user);
 
         return res.status(200).json({
             message: "Category found",
@@ -46,7 +46,7 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
     try {
         const { id } = req.params;
 
-        const result = await update(id, req.body);
+        const result = await update(id, req.body, req.user);
 
         return res.status(200).json({
             message: "Category updated",
@@ -61,7 +61,7 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const result = await remove(id);
+        const result = await remove(id, req.user);
 
         return res.status(200).json({
             message: "Category deleted",
