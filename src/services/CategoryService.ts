@@ -9,7 +9,7 @@ export const create = async (value: CategoryInput, user: any): Promise<Icategory
     });
 
     const check = await Category
-        .findOne({ name: value.name })
+        .findOne({ name: value.name, organizer: user.organizer })
         .exec();
 
     if (check) throw new BadRequestError('Category already exists');
@@ -42,6 +42,14 @@ export const findById = async (id: string, user: any): Promise<Icategory | null>
 }
 
 export const update = async (id: string, { name }: CategoryInput, user: any): Promise<Icategory | null> => {
+    const check = await Category
+        .findOne({ name: name, organizer: user.organizer })
+        .exec();
+
+    if (check && check._id.toString() !== id) {
+        throw new BadRequestError('Category already exists');
+    }
+
     const result = await Category
         .findOneAndUpdate(
             {
