@@ -6,13 +6,14 @@ import {
     getTalentById,
     updateTalent
 } from "../controllers/TalentController";
+import { AuthCheck, AuthCheckRole } from "../middleware/AuthCheck";
 
 const router = Router();
 
-router.post('/', createTalent);
-router.get('/', getAllTalents);
-router.get('/:id', getTalentById);
-router.put('/:id', updateTalent);
-router.delete('/:id', deleteTalent);
+router.post('/', AuthCheck, AuthCheckRole(["organizer"]), createTalent);
+router.get('/', AuthCheck, AuthCheckRole(["organizer"]), getAllTalents);
+router.get('/:id', AuthCheck, AuthCheckRole(["organizer"]), getTalentById);
+router.put('/:id', AuthCheck, AuthCheckRole(["organizer"]), updateTalent);
+router.delete('/:id', AuthCheck, AuthCheckRole(["organizer"]), deleteTalent);
 
 export default router;
