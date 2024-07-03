@@ -1,7 +1,7 @@
 import { BadRequestError } from "../Helpers/errors";
 import { Organizer } from "../schemas/Organizer";
 import { IUser, User } from "../schemas/User";
-import { OrganizerAndUserInput } from "../types/UserType";
+import { OrganizerInput } from "../types/UserType";
 
 export const createUser = async ({ name, email, password }: IUser): Promise<IUser> => {
     const user = new User({ name, email, password });
@@ -32,7 +32,7 @@ export const findUserById = async (id: string): Promise<IUser | null> => {
     return user;
 }
 
-export const createOrganizer = async (input: OrganizerAndUserInput): Promise<IUser> => {
+export const createUserOrganizer = async (input: OrganizerInput): Promise<IUser> => {
     if (input.password !== input.confirmPassword) {
         throw new BadRequestError("Password and confirm password is not match");
     }
@@ -53,3 +53,20 @@ export const createOrganizer = async (input: OrganizerAndUserInput): Promise<IUs
     return user;
 }
 
+export const createUserAdmin = async (input: OrganizerInput, auth: any): Promise<IUser> => {
+    if (input.password !== input.confirmPassword) {
+        throw new BadRequestError("Password and confirm password is not match");
+    }
+
+    const user = new User({
+        name: input.name,
+        email: input.email,
+        password: input.password,
+        organizer: auth.organizer,
+        role: input.role
+    });
+
+    await user.save();
+
+    return user;
+}

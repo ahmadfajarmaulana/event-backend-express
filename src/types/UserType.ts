@@ -4,8 +4,8 @@ export type UserInput = {
     password: string;
 }
 
-export type OrganizerAndUserInput = {
-    organizerName: string;
+export type OrganizerInput = {
+    organizerName?: string;
     name: string;
     email: string;
     password: string;
