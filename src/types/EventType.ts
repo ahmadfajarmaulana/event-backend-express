@@ -1,8 +1,9 @@
 
 export type EventQuery = {
-    title?: { $regex?: string, $options?: string };
-    category?: { $regex?: string, $options?: string };
-    talent?: { $regex?: string, $options?: string };
+    title?: { $regex?: string | object, $options?: string } | string;
+    category?: string;
+    talent?: string;
+    organizer?: string;
 }
 
 export type TicketCategoryInput = {

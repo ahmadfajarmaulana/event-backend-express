@@ -5,18 +5,23 @@ import { findById as findCategoryById } from "./CategoryService";
 import { checkImage } from "./ImageService";
 import { findById as findTalentById } from "./TalentService";
 
-export const findAll = async (keyword: EventQuery): Promise<EventInterface[]> => {
+export const findAll = async (keyword: EventQuery, auth: any): Promise<EventInterface[]> => {
     const { title, category, talent } = keyword;
+    let condition: EventQuery = { organizer: auth.organizer };
 
-    const filter: { [key: string]: any } = {
-        ...(title && {
-            title: { $regex: title, $options: 'i' }
-        }),
-        ...(category && { category }),
-        ...(talent && { talent }),
-    };
+    if (title) {
+        condition = { ...condition, title: { $regex: title, $options: 'i' } };
+    }
 
-    const events = await Event.find(filter)
+    if (category) {
+        condition = { ...condition, category: category };
+    }
+
+    if (talent) {
+        condition = { ...condition, talent: talent };
+    }
+
+    const events = await Event.find(condition)
         .populate({
             path: 'image',
             select: 'id name'
@@ -37,11 +42,14 @@ export const findAll = async (keyword: EventQuery): Promise<EventInterface[]> =>
     return events;
 }
 
-export const create = async (payload: EventInput): Promise<EventInterface> => {
-    const event = new Event(payload);
+export const create = async (payload: EventInput, auth: any): Promise<EventInterface> => {
+    const event = new Event({
+        ...payload,
+        organizer: auth.organizer
+    });
 
     if (payload.image) await checkImage(payload.image);
-    if (payload.category) await findCategoryById(payload.category);
+    if (payload.category) await findCategoryById(payload.category, auth);
     if (payload.talent) await findTalentById(payload.talent);
 
     await event.save();
@@ -49,8 +57,8 @@ export const create = async (payload: EventInput): Promise<EventInterface> => {
     return event;
 }
 
-export const findById = async (id: string): Promise<EventInterface | null> => {
-    const event = await Event.findById(id)
+export const findById = async (id: string, auth: any): Promise<EventInterface | null> => {
+    const event = await Event.findOne({ _id: id, organizer: auth.organizer })
         .populate({
             path: 'image',
             select: 'id name'
@@ -75,24 +83,26 @@ export const findById = async (id: string): Promise<EventInterface | null> => {
     return event;
 }
 
-export const update = async (id: string, values: EventInput): Promise<EventInterface> => {
+export const update = async (id: string, values: EventInput, auth: any): Promise<EventInterface> => {
     if (values.image) await checkImage(values.image);
-    if (values.category) await findCategoryById(values.category);
+    if (values.category) await findCategoryById(values.category, auth);
     if (values.talent) await findTalentById(values.talent);
 
-    const result = await Event.findByIdAndUpdate(id, values,
-        {
-            new: true,
-            runValidators: true
-        }).exec();
+    const result = await Event.findOneAndUpdate(
+        { _id: id, organizer: auth.organizer },
+        { ...values, organizer: auth.organizer },
+        { new: true, runValidators: true })
+        .exec();
 
     if (!result) throw new NotFoundError('Event not found with id : ' + id);
 
     return result;
 }
 
-export const remove = async (id: string): Promise<EventInterface> => {
-    const event = await Event.findByIdAndDelete(id);
+export const remove = async (id: string, auth: any): Promise<EventInterface> => {
+    const event = await Event
+        .findOneAndDelete({ _id: id, organizer: auth.organizer })
+        .exec();
 
     if (!event) throw new NotFoundError('Event not found with id : ' + id);
 

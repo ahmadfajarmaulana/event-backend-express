@@ -5,7 +5,7 @@ import { EventInput, EventQuery } from '../types/EventType';
 export const getAllEvents = async (req: Request, res: Response, next: NextFunction) => {
     const filter: EventQuery = req.query;
     try {
-        const events = await findAll(filter);
+        const events = await findAll(filter, req.user);
         return res.status(200).json({
             message: "All Events",
             data: events
@@ -18,7 +18,7 @@ export const getAllEvents = async (req: Request, res: Response, next: NextFuncti
 export const getEventById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const event = await findById(id);
+        const event = await findById(id, req.user);
         return res.status(200).json({
             message: "Event found",
             data: event
@@ -31,7 +31,7 @@ export const getEventById = async (req: Request, res: Response, next: NextFuncti
 export const createEvent = async (req: Request, res: Response, next: NextFunction) => {
     const payload: EventInput = req.body;
     try {
-        const event = await create(payload);
+        const event = await create(payload, req.user);
         return res.status(201).json({
             message: "Event created",
             data: event
@@ -45,7 +45,7 @@ export const updateEvent = async (req: Request, res: Response, next: NextFunctio
     try {
         const { id } = req.params;
         const payload: EventInput = req.body;
-        const event = await update(id, payload)
+        const event = await update(id, payload, req.user)
         return res.status(201).json({
             message: "Event updated",
             data: event
@@ -58,7 +58,7 @@ export const updateEvent = async (req: Request, res: Response, next: NextFunctio
 export const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const event = await remove(id);
+        const event = await remove(id, req.user);
         return res.status(200).json({
             message: "Event deleted",
             data: event
