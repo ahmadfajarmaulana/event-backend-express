@@ -6,15 +6,16 @@ import {
     getEventById,
     updateEvent
 } from "../controllers/EventController";
+import { AuthCheck, AuthCheckRole } from "../middleware/AuthCheck";
 
 
 const router = Router();
 
-router.post("/", createEvent);
-router.get("/", getAllEvents);
-router.get("/:id", getEventById);
-router.put("/:id", updateEvent);
-router.delete("/:id", deleteEvent);
+router.post("/", AuthCheck, AuthCheckRole(["organizer"]), createEvent);
+router.get("/", AuthCheck, AuthCheckRole(["organizer"]), getAllEvents);
+router.get("/:id", AuthCheck, AuthCheckRole(["organizer"]), getEventById);
+router.put("/:id", AuthCheck, AuthCheckRole(["organizer"]), updateEvent);
+router.delete("/:id", AuthCheck, AuthCheckRole(["organizer"]), deleteEvent);
 
 
 
