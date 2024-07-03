@@ -45,6 +45,7 @@ export interface EventInterface extends Document {
     image: Types.ObjectId;
     category: Types.ObjectId;
     talent: Types.ObjectId;
+    organizer: Types.ObjectId;
 }
 
 // Event Schema
@@ -97,6 +98,11 @@ const EventSchema = new Schema(
         talent: {
             type: Types.ObjectId,
             ref: 'Talent',
+            required: true,
+        },
+        organizer: {
+            type: Types.ObjectId,
+            ref: 'User',
             required: true,
         },
     },

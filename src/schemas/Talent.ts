@@ -5,6 +5,7 @@ export interface TalentInterface extends Document {
     name: string;
     role: string;
     image: Types.ObjectId;
+    organizer: Types.ObjectId;
 }
 
 const TalentSchema = new Schema({
@@ -21,6 +22,11 @@ const TalentSchema = new Schema({
         type: Types.ObjectId,
         ref: 'Image',
         required: [true, 'Image id is required']
+    },
+    organizer: {
+        type: Types.ObjectId,
+        ref: 'User',
+        required: [true, 'Organizer id is required']
     }
 }, {
     timestamps: true

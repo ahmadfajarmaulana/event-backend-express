@@ -50,7 +50,7 @@ export const create = async (payload: EventInput, auth: any): Promise<EventInter
 
     if (payload.image) await checkImage(payload.image);
     if (payload.category) await findCategoryById(payload.category, auth);
-    if (payload.talent) await findTalentById(payload.talent);
+    if (payload.talent) await findTalentById(payload.talent, auth);
 
     await event.save();
 
@@ -86,7 +86,7 @@ export const findById = async (id: string, auth: any): Promise<EventInterface | 
 export const update = async (id: string, values: EventInput, auth: any): Promise<EventInterface> => {
     if (values.image) await checkImage(values.image);
     if (values.category) await findCategoryById(values.category, auth);
-    if (values.talent) await findTalentById(values.talent);
+    if (values.talent) await findTalentById(values.talent, auth);
 
     const result = await Event.findOneAndUpdate(
         { _id: id, organizer: auth.organizer },
