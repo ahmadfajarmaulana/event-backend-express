@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { createUserAdmin, createUserOrganizer } from "../services/UserService";
+import { createUserAdmin, createUserOrganizer, findAllUsers } from "../services/UserService";
 import { OrganizerInput } from "../types/UserType";
 
 
@@ -26,6 +26,19 @@ export const createAdmin = async (req: Request, res: Response, next: NextFunctio
             message: "Organizer created",
             data: organizer
         });
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const users = await findAllUsers();
+
+        return res.status(200).json({
+            message: 'All Users',
+            data: users
+        })
     } catch (error) {
         next(error)
     }
