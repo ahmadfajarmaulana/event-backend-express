@@ -4,6 +4,7 @@ export type EventQuery = {
     category?: string;
     talent?: string;
     organizer?: string;
+    statusEvent?: 'Draft' | 'Published';
 }
 
 export type TicketCategoryInput = {

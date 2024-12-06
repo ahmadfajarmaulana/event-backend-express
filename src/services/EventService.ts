@@ -7,7 +7,7 @@ import { checkImage } from "./ImageService";
 import { findById as findTalentById } from "./TalentService";
 
 export const findAll = async (keyword: EventQuery, auth: any): Promise<EventInterface[]> => {
-    const { title, category, talent } = keyword;
+    const { title, category, talent, statusEvent } = keyword;
     let condition: EventQuery = { organizer: auth.organizer };
 
     if (title) {
@@ -20,6 +20,10 @@ export const findAll = async (keyword: EventQuery, auth: any): Promise<EventInte
 
     if (talent) {
         condition = { ...condition, talent: talent };
+    }
+
+    if(statusEvent && ['Draft', 'Published'].includes(statusEvent)) {
+        condition = { ...condition, statusEvent: statusEvent };
     }
 
     const events = await Event.find(condition)
