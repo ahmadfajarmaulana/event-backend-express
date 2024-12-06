@@ -1,3 +1,4 @@
+import { JwtPayload } from "src/types/JwtPayload";
 import { BadRequestError, NotFoundError } from "../Helpers/errors";
 import { Category, Icategory } from "../schemas/Category";
 import { CategoryInput } from "../types/CategoryType";
@@ -41,7 +42,7 @@ export const findById = async (id: string, user: any): Promise<Icategory | null>
     return result;
 }
 
-export const update = async (id: string, { name }: CategoryInput, user: any): Promise<Icategory | null> => {
+export const update = async (id: string, { name }: CategoryInput, user: JwtPayload): Promise<Icategory | null> => {
     const check = await Category
         .findOne({ name: name, organizer: user.organizer })
         .exec();
@@ -65,7 +66,7 @@ export const update = async (id: string, { name }: CategoryInput, user: any): Pr
     return result;
 }
 
-export const remove = async (id: string, user: any): Promise<Icategory | null> => {
+export const remove = async (id: string, user: JwtPayload): Promise<Icategory | null> => {
     const result = await Category
         .findOneAndDelete({
             _id: id,

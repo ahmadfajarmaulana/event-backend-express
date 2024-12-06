@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { JwtPayload } from "src/types/JwtPayload";
 import { create, findAll, findById, remove, update } from "../services/CategoryService";
 
 
@@ -46,7 +47,7 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
     try {
         const { id } = req.params;
 
-        const result = await update(id, req.body, req.user);
+        const result = await update(id, req.body, req.user as JwtPayload);
 
         return res.status(200).json({
             message: "Category updated",
@@ -61,7 +62,7 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const result = await remove(id, req.user);
+        const result = await remove(id, req.user as JwtPayload);
 
         return res.status(200).json({
             message: "Category deleted",
