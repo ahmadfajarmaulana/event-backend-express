@@ -3,8 +3,10 @@ import AuthRoutes from "./AuthRoutes";
 import CategorRoutes from "./CategoryRoutes";
 import EventRoutes from "./EventRoutes";
 import ImageRoutes from "./ImageRoutes";
+import OrderRoutes from "./OrderRoutes";
 import OrganizerRoutes from "./OrganizerRoutes";
 import TalentRoutes from "./TalentRoutes";
+
 // import UserRoutes from "./UserRoutes";
 
 const routes = Router();
@@ -16,5 +18,6 @@ routes.use("/api/v1/images", ImageRoutes)
 routes.use("/api/v1/talents", TalentRoutes)
 routes.use("/api/v1/events", EventRoutes)
 routes.use("/api/v1/organizer", OrganizerRoutes)
+routes.use("/api/v1/order", OrderRoutes)
 
 export default routes;
