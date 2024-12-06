@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { create, findAll, findById, remove, update } from '../services/EventService';
+import { changeStatusEvents, create, findAll, findById, remove, update } from '../services/EventService';
 import { EventInput, EventQuery } from '../types/EventType';
+import { JwtPayload } from '../types/JwtPayload';
 
 export const getAllEvents = async (req: Request, res: Response, next: NextFunction) => {
     const filter: EventQuery = req.query;
@@ -61,6 +62,21 @@ export const deleteEvent = async (req: Request, res: Response, next: NextFunctio
         const event = await remove(id, req.user);
         return res.status(200).json({
             message: "Event deleted",
+            data: event
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const updateStatusEvent = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const { statusEvent } = req.body;
+        const auth = req.user as JwtPayload;
+        const event = await changeStatusEvents(id, statusEvent , auth);
+        return res.status(200).json({
+            message: "Status event updated",
             data: event
         });
     } catch (error) {

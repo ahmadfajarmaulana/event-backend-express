@@ -1,6 +1,7 @@
-import { NotFoundError } from "../Helpers/errors";
+import { BadRequestError, NotFoundError } from "../Helpers/errors";
 import { Event, EventInterface } from "../schemas/Event";
 import { EventInput, EventQuery } from "../types/EventType";
+import { JwtPayload } from "../types/JwtPayload";
 import { findById as findCategoryById } from "./CategoryService";
 import { checkImage } from "./ImageService";
 import { findById as findTalentById } from "./TalentService";
@@ -102,6 +103,18 @@ export const update = async (id: string, values: EventInput, auth: any): Promise
 export const remove = async (id: string, auth: any): Promise<EventInterface> => {
     const event = await Event
         .findOneAndDelete({ _id: id, organizer: auth.organizer })
+        .exec();
+
+    if (!event) throw new NotFoundError('Event not found with id : ' + id);
+
+    return event;
+}
+
+export const changeStatusEvents = async (id: string, statusEvent: string , auth: JwtPayload): Promise<EventInterface> => {
+
+    if(!['Draft', 'Published'].includes(statusEvent)) throw new BadRequestError('Invalid status event');
+    const event = await Event
+        .findOneAndUpdate({ _id: id, organizer: auth.organizer}, {statusEvent: statusEvent})
         .exec();
 
     if (!event) throw new NotFoundError('Event not found with id : ' + id);
